@@ -1,19 +1,19 @@
-[project]
+[tool.poetry]
 name = "dna_features_viewer"
 version = "3.1.5"
-license = "MIT"
-authors = [{ name = "Zulko" }]
 description = "Plot features from DNA sequences (e.g. Genbank) with Python"
+authors = ["Zulko"]
+license = "MIT"
 readme = "pypi-readme.rst"
+homepage = "https://github.com/Edinburgh-Genome-Foundry/DnaFeaturesViewer"
 keywords = ["DNA", "Sequence", "Feature", "Genbank", "Biopython", "Matplotlib"]
-dependencies = ["matplotlib>=3", "Biopython", "packaging"]
 
-[project.urls]
-Homepage = "https://github.com/Edinburgh-Genome-Foundry/DnaFeaturesViewer"
+[tool.poetry.dependencies]
+python = ">=3.10"
+matplotlib = ">=3"
+Biopython = "*"
+packaging = "*"
 
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
-
-[tool.setuptools.packages.find]
-exclude = ["docs*", "examples*", "tests*"]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
