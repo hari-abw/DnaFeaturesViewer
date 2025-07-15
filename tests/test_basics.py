@@ -244,6 +244,34 @@ def test_gff():
     assert len(graphic_record.features) == 3
 
 
+def test_gff_with_no_sequence(tmpdir):
+    """Test that a GFF with no sequence can be plotted."""
+
+    # 1. The BiopythonTranslator is instantiated.
+    translator = BiopythonTranslator()
+
+    # 2. The translate_record method is called with the path to the GFF file.
+    #    - The BiopythonTranslatorBase.translate_record method is called.
+    #    - It loads the GFF file into a Biopython record object.
+    #    - It then attempts to get the sequence length from the record.
+    #    - Since the GFF has no sequence, a Bio.Seq.UndefinedSequenceError is raised.
+    #    - The `except` block in `translate_record` catches the error.
+    #    - It then determines the sequence length by finding the maximum end position of all features.
+    #    - It creates a GraphicRecord with the calculated sequence length and the features from the GFF file.
+    graphic_record = translator.translate_record("tests/data/no_sequence.gff")
+
+    # 3. The plot method is called on the GraphicRecord.
+    #    - This generates a matplotlib plot of the features.
+    ax, _ = graphic_record.plot(figure_width=10)
+
+    # 4. The plot is saved to a file.
+    target_file = os.path.join(str(tmpdir), "gff_with_no_sequence.png")
+    ax.figure.savefig(target_file)
+
+    # 5. We assert that the file was created.
+    assert os.path.exists(target_file)
+
+
 def test_multiline_plot():
 
     translator = BiopythonTranslator()
