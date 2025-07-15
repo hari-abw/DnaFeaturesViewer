@@ -15,35 +15,30 @@ except ImportError:
 
 
 def _load_gff_with_all_features(path):
-    """Custom function to load a GFF file and gather all features."""
+    """Custom function to load a GFF file and gather all features.
+    
+    This function addresses the limitation of BCBio.GFF.parse which only
+    returns the first top-level record. It extracts all features including
+    sub-features (exons, CDS, etc.) from hierarchical GFF structures.
+    """
     
     records = list(GFF.parse(path))
-    print(f"DEBUG: GFF parse returned {len(records)} records")
-    
     combined_record = records[0]  # start with the first record
-    print(f"DEBUG: First record has {len(combined_record.features)} features")
     
     all_features = []
-    for i, feature in enumerate(combined_record.features):
-        print(f"DEBUG: Feature {i}: {feature.type} at {feature.location.start}-{feature.location.end}")
-        print(f"DEBUG: Feature {i} qualifiers: {feature.qualifiers}")
-
+    for feature in combined_record.features:
         # Add main feature
         all_features.append(feature)
         
-        # Check for sub-features
+        # Check for sub-features and extract them as individual features
         if hasattr(feature, 'sub_features'):
-            print(f"DEBUG: Feature {i} has {len(feature.sub_features)} sub-features")
             all_features.extend(feature.sub_features)
-            for j, sub_feature in enumerate(feature.sub_features):
-                print(f"DEBUG: Sub-feature {j}: {sub_feature.type} at {sub_feature.location.start}-{sub_feature.location.end}")
     
     # Assign all features to the combined record
     combined_record.features = all_features
 
-    # Check if there are more records
-    for i, additional_record in enumerate(records[1:]):
-        print(f"DEBUG: Additional record {i+1} has {len(additional_record.features)} features")
+    # Handle multiple records if present
+    for additional_record in records[1:]:
         combined_record.features.extend(additional_record.features)
     
     return combined_record
