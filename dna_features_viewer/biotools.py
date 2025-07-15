@@ -14,6 +14,41 @@ except ImportError:
             raise ImportError("Please install the bcbio-gff library to parse GFF data")
 
 
+def _load_gff_with_all_features(path):
+    """Custom function to load a GFF file and gather all features."""
+    
+    records = list(GFF.parse(path))
+    print(f"DEBUG: GFF parse returned {len(records)} records")
+    
+    combined_record = records[0]  # start with the first record
+    print(f"DEBUG: First record has {len(combined_record.features)} features")
+    
+    all_features = []
+    for i, feature in enumerate(combined_record.features):
+        print(f"DEBUG: Feature {i}: {feature.type} at {feature.location.start}-{feature.location.end}")
+        print(f"DEBUG: Feature {i} qualifiers: {feature.qualifiers}")
+
+        # Add main feature
+        all_features.append(feature)
+        
+        # Check for sub-features
+        if hasattr(feature, 'sub_features'):
+            print(f"DEBUG: Feature {i} has {len(feature.sub_features)} sub-features")
+            all_features.extend(feature.sub_features)
+            for j, sub_feature in enumerate(feature.sub_features):
+                print(f"DEBUG: Sub-feature {j}: {sub_feature.type} at {sub_feature.location.start}-{sub_feature.location.end}")
+    
+    # Assign all features to the combined record
+    combined_record.features = all_features
+
+    # Check if there are more records
+    for i, additional_record in enumerate(records[1:]):
+        print(f"DEBUG: Additional record {i+1} has {len(additional_record.features)} features")
+        combined_record.features.extend(additional_record.features)
+    
+    return combined_record
+
+
 def complement(dna_sequence):
     """Return the complement of the DNA sequence.
 
@@ -115,7 +150,7 @@ def load_record(path, filetype=None):
         if isinstance(path, str):
             # Input is a file path
             if path.lower().endswith(".gff"):
-                return list(GFF.parse(path))[0]
+                return _load_gff_with_all_features(path)
             else:
                 return SeqIO.read(path, "genbank")
         else:
@@ -124,11 +159,11 @@ def load_record(path, filetype=None):
                 return SeqIO.read(path, "genbank")
             except:
                 path.seek(0)
-                return list(GFF.parse(path))[0]
+                return _load_gff_with_all_features(path)
     elif filetype == "genbank":
         return SeqIO.read(path, "genbank")
     elif filetype == "gff":
-        return list(GFF.parse(path))[0]
+        return _load_gff_with_all_features(path)
     else:
         raise ValueError("'Filetype' must be one of 'genbank' or 'gff'.")
 

@@ -272,6 +272,36 @@ def test_gff_with_no_sequence(tmpdir):
     assert os.path.exists(target_file)
 
 
+def test_multi_feature_gff_with_no_sequence(tmpdir):
+    """Test that a multi-feature GFF with no sequence can be parsed and plotted."""
+    
+    translator = BiopythonTranslator()
+    graphic_record = translator.translate_record("tests/data/multi_feature_no_sequence.gff")
+    
+    # Check that all features are loaded (gene, TF_binding_site, exons, CDS)
+    # The exact number depends on how BCBio.GFF.parse handles the hierarchical structure
+    print(f"Number of features loaded: {len(graphic_record.features)}")
+    for i, feature in enumerate(graphic_record.features):
+        print(f"Feature {i}: {feature.start}-{feature.end}, label: {feature.label}")
+    
+    # There should be multiple features
+    assert len(graphic_record.features) > 1
+    
+    # Generate plot
+    ax, _ = graphic_record.plot(figure_width=12)
+    
+    # Save plot
+    target_file = os.path.join(str(tmpdir), "multi_feature_gff_no_sequence.png")
+    ax.figure.savefig(target_file)
+    
+    # Also save to examples directory for inspection
+    examples_file = os.path.join("examples", "multi_feature_gff_no_sequence.png")
+    ax.figure.savefig(examples_file)
+    
+    assert os.path.exists(target_file)
+    assert os.path.exists(examples_file)
+
+
 def test_multiline_plot():
 
     translator = BiopythonTranslator()

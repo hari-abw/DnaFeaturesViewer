@@ -1,0 +1,13 @@
+##gff-version 3
+#gff-spec-version 1.21
+##sequence-region ctg123 1 1497228
+ctg123	.	gene	1000	9000	.	+	.	ID=gene00001;Name=EDEN
+ctg123	.	TF_binding_site	1000	1012	.	+	.	ID=tfbs00001;Parent=gene00001
+ctg123	.	exon	1050	1500	.	+	.	ID=exon00001;Parent=gene00001
+ctg123	.	exon	3000	3902	.	+	.	ID=exon00002;Parent=gene00001
+ctg123	.	exon	5000	5300	.	+	.	ID=exon00003;Parent=gene00001
+ctg123	.	exon	7000	7600	.	+	.	ID=exon00004;Parent=gene00001
+ctg123	.	CDS	1201	1500	.	+	0	ID=cds00001;Parent=gene00001;Name=EDEN.1
+ctg123	.	CDS	3000	3902	.	+	0	ID=cds00001;Parent=gene00001;Name=EDEN.1
+ctg123	.	CDS	5000	5300	.	+	0	ID=cds00001;Parent=gene00001;Name=EDEN.1
+ctg123	.	CDS	7000	7600	.	+	0	ID=cds00001;Parent=gene00001;Name=EDEN.1
