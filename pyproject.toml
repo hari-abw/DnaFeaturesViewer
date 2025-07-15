@@ -13,6 +13,11 @@ python = ">=3.10"
 matplotlib = ">=3"
 Biopython = "*"
 packaging = "*"
+bokeh = "^3.7.3"
+bcbio-gff = "^0.7.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.4.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
